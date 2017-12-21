@@ -1,0 +1,7 @@
+gcc perso.c -c
+gcc plateau.c -c
+gcc deplacement.c -c
+gcc verif_dep_singe.c -c
+gcc affichage.c -c
+gcc verif.c -c
+gcc main.c perso.o deplacement.o plateau.o verif_dep_singe.o affichage.o verif.o -o shang -lm
