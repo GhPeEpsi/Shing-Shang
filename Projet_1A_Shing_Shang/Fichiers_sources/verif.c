@@ -5,7 +5,7 @@
 
 //##############################################################################################################################################
 
-int choix_verif(deplacement demande, case_pla plateau)
+int choix_verif(deplacement demande, case_pla plateau[HAU_PLA][LAR_PLA])
 {
  //variables
  int res;
@@ -33,9 +33,6 @@ int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA])
  if(test.bushi==caract_bushi)
  {
   res=1;
-  #ifdef DEBUG
-   printf("%d",res);
-  #endif
  }
  else
  {
@@ -43,4 +40,5 @@ int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA])
  }
 
  //le return si res==0 alors pas bon / si res==1 ok
+ return res;
 }

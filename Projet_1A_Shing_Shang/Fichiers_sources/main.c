@@ -11,7 +11,7 @@ void main()
 
  //creation des variables, pseudo, plateau, ... :
  perso pseudo1, pseudo2;
- int tmp;
+ int tmp, res	;
  case_pla plateau[HAU_PLA][LAR_PLA];
  deplacement move;
  printf("salut");
