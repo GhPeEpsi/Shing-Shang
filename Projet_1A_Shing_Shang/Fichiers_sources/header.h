@@ -62,8 +62,9 @@ int pile_face();
 void demande(deplacement *test);
 
 //verif :
-int choix_verif(deplacement demande, case_pla plateau[HAU_PLA][LAR_PLA]);
+void choix_verif(deplacement demande, case_pla plateau[HAU_PLA][LAR_PLA]);
 int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA]);
+void boucle_entre_correcte(deplacement *demande, case_pla plateau[HAU_PLA][LAR_PLA]);
 
 //persos :
 void entre_joueur(int nb, perso *p);

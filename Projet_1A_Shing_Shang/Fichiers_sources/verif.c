@@ -5,15 +5,46 @@
 
 //##############################################################################################################################################
 
-int choix_verif(deplacement demande, case_pla plateau[HAU_PLA][LAR_PLA])
+void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 {
+ // ### comment ###
+ //Cette fonction demande les déplacements voulue par le joueur jusqu'a ce qu'ils soient correcte
+ // 
+
+ //variables :
+ 
+
+ //lancement de la fonction qui demande les déplacement dans une boucle while :
+ do
+ {
+  demande(move);
+  res=verif_bushis(*demande, plateau);
+ } while (res==0);
+
+ //if(res==0)
+ //{
+  //printf("La case que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n");
+ //}
+
+}
+
+//##############################################################################################################################################
+
+void choix_verif(deplacement *demande, case_pla plateau[HAU_PLA][LAR_PLA])
+{
+ //#### comment ####
+ //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications
+ //
+ 
  //variables
  int res;
 
- //lancement de la premiére fonction qui verrifie que le Bushis indiqué par le jour est bien le bushis qui est dans la case :
+ //lancement de la demande :
+ boucle_entre_correcte(&demande, plateau);
+
+ //lancement la fonction qui verrifie que le Bushis indiqué par le joueur est bien le bushis qui est dans la case :
  res=verif_bushis(demande, plateau);
 
- return res;
 }
 
 //##############################################################################################################################################

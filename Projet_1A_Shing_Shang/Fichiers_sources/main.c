@@ -23,10 +23,9 @@ void main()
  aff_pla(plateau);
 
  //lancement des demandes de jeu :
- demande(&move);
 
  //lancement des verifs
- res=choix_verif(move, plateau);
- printf("resultat : %d",res);
+ choix_verif(&move, plateau);
+
  //choix_singe(move, plateau);
 }
