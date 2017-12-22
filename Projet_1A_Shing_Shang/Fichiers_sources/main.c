@@ -1,4 +1,5 @@
 #include "header.h"
+#include "structures.h"
 
 void main()
 {

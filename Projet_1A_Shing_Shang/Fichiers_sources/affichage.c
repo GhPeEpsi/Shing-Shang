@@ -1,5 +1,6 @@
 //ce fichier contient toutes les fonctions relatives à l'affichage :
-#include "header.h"
+#include "affichage.h"
+#include "structures.h"
 
 
 void vouloir_regles()
@@ -52,6 +53,97 @@ void entete()
  
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//1/ générer exec gcc _______.c -o _______ -lm
-//2/ lancer :     ./_______
+void aff_pla(case_pla plateau[HAU_PLA][LAR_PLA])
+{
+ //#### coment ####
+ //cette fonction permet l'affichage d'un plateau 
+
+ //variables :
+ int i, j;
+
+ printf("\n");   //sert a espacer les plateaux
+
+ //affichage d'une ligne de chiffres qui permet de localiser les cases :
+ printf("  "); //permet d'espacer la ligne pour laisser de la place a la ligne vertical.
+ for(i=0 ; i<LAR_PLA ; i++)
+ {
+  printf(" %d",i);
+ }
+
+ printf("\n"); printf("\n");   //sert a espacer les plateaux et la ligne
+ 
+ //affichage:
+ for(i=0 ; i<HAU_PLA ; i++)
+ {
+  printf("%d ",i);   //permet d'afficher une ligne de chiffre vertical qui permet de reperrer les bushis.
+  for(j=0 ; j<LAR_PLA ; j++)
+  {
+   if((plateau[i][j].non_case==1)) //premiére partie permets de selectionner les 16 cases des coins la deuxieme pour mettre de
+   {                                             //l'espace dans le tableau   
+    printf("  ");                                 //permet d'espacer le tableau pour qu'il paraisse plus carré (même si c'en est pas un ...)
+   }
+   else
+   {
+    aff_couleur_bushis(plateau[i][j].couleur, plateau[i][j].bushis);   //affiche les P, D, L, S
+   }    
+  }
+  printf("\n");   //sert a passer à la ligne
+ }
+
+
+ printf("\n");   //sert à espacer les plateaux
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void aff_couleur_bushis(int couleur, char bush)  //appellé par aff_couleur_bushis(couleur.plateau[i][j], char bush)
+{
+ //#### coment ####
+ //cette fonction permet l'affichage d'une case ainsi que sa couleur 
+ 
+
+ if(couleur==0)
+ {
+  printf(" %c",bush);
+ }
+
+ if(couleur==31)
+ {
+  couleur("31");
+  printf(" %c",bush);
+  couleur("0");
+ }
+
+ if(couleur==34)
+ {
+  couleur("34");
+  printf(" %c",bush);
+  couleur("0");
+ }
+
+ if(couleur==32)
+ {
+  couleur("32");
+  printf(" %c",bush);
+  couleur("0");
+ }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void ecrire_pseudo(perso pseudo)
+{
+ //###### coment #####
+ //cette fonction sert a écrire le pseudo 1 :
+ // !!!! ATTENTION PAS DE RETOUR A LA LIGNE !!!!
+ //
+
+
+ //ecriture
+ printf("%s",pseudo.nom);
+
+}
+

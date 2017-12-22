@@ -1,5 +1,5 @@
-gcc perso.c -c
-gcc plateau.c -c
+gcc demande.c -c
+gcc initialisation.c -c
 gcc deplacement.c -c
 gcc verif_dep_singe.c -c
 gcc affichage.c -c
