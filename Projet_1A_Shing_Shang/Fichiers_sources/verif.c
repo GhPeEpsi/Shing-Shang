@@ -16,16 +16,16 @@ void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
  //
  
  //variables
- int res_demande, res_deplacement;
+ int res_deplacement;
 
  //lancement de la demande :
- res_demande=boucle_entre_correcte(move, plateau);
+ boucle_entre_correcte(move, plateau);
 
  //lancement la fonction qui verrifie que les déplacements :
  res_deplacement=choix_singe(*move);
 
  //si les deux sont ok alors on peut lancer le déplacement du bushis :
- if ((res_demande==1)&&(res_deplacement==1))
+ if (res_deplacement==1)
  {
   change_bushis(*move,plateau);
  }
@@ -37,28 +37,33 @@ void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 
 //#############################################################################################################################################
 
-int boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
+void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 {
  // ### comment ###
  //Cette fonction demande les déplacements voulue par le joueur jusqu'a ce qu'ils soient correcte
  // 
 
  //variables :
- int res;
+ int res_bushi, res_vide;
 
  //lancement de la fonction qui demande les déplacement dans une boucle while :
  do
  {
   demande_dep(move);
-  res=verif_bushis(*move, plateau);
-  if(res==0)
-  {
-   printf("\nLa case que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n\n");
-  }
- } while (res==0);
+  res_bushi=verif_bushis(*move, plateau);
+  res_vide=verif_arrive(*move, plateau);
 
- //retour du bon(ou non) fonctionnement : 1=>ok 0=>pas ok 
- return res;
+  if(res_bushi==0)
+  {
+   printf("\nLa case de départ que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n\n");
+  }
+
+  if(res_vide==0)
+  {
+   printf("\nLa case d'arrivé est déjà rempli\n\n");
+  }
+
+ } while ((res_bushi==0)||(res_vide==0));
 
 }
 
@@ -213,5 +218,31 @@ int singe_diagonal(deplacement singe)
  //return qui renvoie si ca a fonctionné ou non
  return res;
 }
+
+//##############################################################################################################################################
+
+int verif_arrive(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
+{
+ //#### comment ####
+ //cette fonction permet de verifier que la case d'arrivé est bien vide
+ //
+ 
+ //variables :
+ int res;
+
+ //verif :
+ if(plateau[move.x_arr][move.y_arr].vide==0)
+ {
+  res=1;
+ }
+ else
+ {
+ res=0;
+ }
+ 
+ //retour
+ return res;
+}
+
 
 
