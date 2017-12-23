@@ -1,6 +1,8 @@
 //ce fichier regroupe tout les fonctions relatives au plateau:
 #include "structures.h"
 #include "initialisation.h"
+#include "affichage.h"
+#include "verif.h"
 
 void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 {
@@ -147,6 +149,50 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement *move)
+{
+ //#### Comment ####
+ //cette fonction gere le nombre de tour de la partie
+ //
+
+ //variables :
+ int i=0, res;
+
+ //boucle qui permet la continuité de la partie
+ do 
+ {
+  qui_joue(i);
+  aff_pla(plateau);
+  choix_verif(move, plateau);
+  //res=gagner();
+  i++;
+ }while(res!=1);
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void qui_joue(int i)
+{
+ //#### comment ####
+ //Cette fonction gére l'affichage de qui joue
+ //
+ 
+ if(i%2==0)
+ {
+  printf("\n\nTour %d c'est au joueur 1 de jouer !\n",i+1);
+ }
+ else
+ {
+  printf("\n\nTour %d c'est au joueur 2 de jouer !\n",i+1);
+ }
+ 
+}
+
+
+
+
 
 
 

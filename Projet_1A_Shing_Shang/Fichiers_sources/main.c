@@ -22,12 +22,7 @@ void main()
  //entete();
 
  remp_pla(plateau);
- aff_pla(plateau);
 
- //lancement des demandes de jeu :
-
- //lancement des verifs
- choix_verif(&move, plateau);
- aff_pla(plateau);
-
+ deroulement(plateau, &move);
+ 
 }
