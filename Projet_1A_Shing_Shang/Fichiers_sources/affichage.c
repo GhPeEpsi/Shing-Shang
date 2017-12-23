@@ -1,6 +1,6 @@
 //ce fichier contient toutes les fonctions relatives à l'affichage :
-#include "affichage.h"
 #include "structures.h"
+#include "affichage.h"
 
 
 void vouloir_regles()

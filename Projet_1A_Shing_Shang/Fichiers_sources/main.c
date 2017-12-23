@@ -1,5 +1,8 @@
-#include "header.h"
 #include "structures.h"
+#include "affichage.h"
+#include "verif.h"
+#include "initialisation.h"
+
 
 void main()
 {
@@ -7,8 +10,6 @@ void main()
  //###### coment #######
  //Cette fonction est le début ce sera celle qui sera lancé
  //
-
- //salut je fais un test (Bastien)
 
  //creation des variables, pseudo, plateau, ... :
  perso pseudo1, pseudo2;

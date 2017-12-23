@@ -1,11 +1,11 @@
 //dans ce fichier on essayer de faire une verif de déplacement :
-#include "header.h"
 #include "structures.h"
+#include "verif.h"
+#include "demande.h"
 
-
-//##############################################################################################################################################
-//##################################################   LANCEMENT DE TOUTES LES VERIFS   ########################################################
-//##############################################################################################################################################
+//###########################################################################################################################################
+//##################################################   LANCEMENT DE TOUTES LES VERIFS  ######################################################
+//###########################################################################################################################################
 
 void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 {
@@ -19,20 +19,21 @@ void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA]
  //lancement de la fonction qui demande les déplacement dans une boucle while :
  do
  {
-  demande(move);
-  res=verif_bushis(*demande, plateau);
+  demande_dep(move);
+  res=verif_bushis(*move, plateau);
+  if(res==0)
+  {
+   printf("La case que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n");
+  }
  } while (res==0);
 
- //if(res==0)
- //{
-  //printf("La case que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n");
- //}
+ 
 
 }
 
-//##############################################################################################################################################
+//###########################################################################################################################################
 
-void choix_verif(deplacement *demande, case_pla plateau[HAU_PLA][LAR_PLA])
+void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 {
  //#### comment ####
  //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications
@@ -42,10 +43,10 @@ void choix_verif(deplacement *demande, case_pla plateau[HAU_PLA][LAR_PLA])
  int res;
 
  //lancement de la demande :
- boucle_entre_correcte(*demande, plateau);
+ boucle_entre_correcte(move, plateau);
 
  //lancement la fonction qui verrifie que le Bushis indiqué par le joueur est bien le bushis qui est dans la case :
- res=verif_bushis(demande, plateau);
+ res=verif_bushis(*move, plateau);
 
 }
 

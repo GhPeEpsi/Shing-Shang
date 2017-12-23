@@ -1,6 +1,6 @@
 //dans ce fichier on peut trouver les fonctions relatives aux personnages :
-#include "header.h"
 #include "structures.h"
+#include "demande.h"
 
 void entre_joueur(int nb, perso *p)
 {
@@ -18,7 +18,7 @@ void entre_joueur(int nb, perso *p)
 
 //##############################################################################################################################################
 
-void demande(deplacement *test)
+void demande_dep(deplacement *test)
 {
 	//demande du type de bushi à déplacer
 	do

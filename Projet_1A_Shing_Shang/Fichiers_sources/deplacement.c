@@ -1,6 +1,6 @@
 //IMPORTATION DES BIBLIOTHEQUES
-#include "header.h"
 #include "structures.h"
+#include "deplacement.h"
 
 
 //FONCTION DEMANDE DE DEPLACEMENT DU BUSHI (POSITION + TYPE)

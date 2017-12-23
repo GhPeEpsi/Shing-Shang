@@ -1,6 +1,6 @@
 //ce fichier regroupe tout les fonctions relatives au plateau:
-#include "header.h"
 #include "structures.h"
+#include "initialisation.h"
 
 void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 {
