@@ -2,12 +2,42 @@
 #include "structures.h"
 #include "verif.h"
 #include "demande.h"
+#include "deplacement.h"
 
 //###########################################################################################################################################
 //##################################################   LANCEMENT DE TOUTES LES VERIFS  ######################################################
 //###########################################################################################################################################
 
-void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
+
+void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
+{
+ //#### comment ####
+ //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications et lance la fonction qui deplace le bushis
+ //
+ 
+ //variables
+ int res_demande, res_deplacement;
+
+ //lancement de la demande :
+ res_demande=boucle_entre_correcte(move, plateau);
+
+ //lancement la fonction qui verrifie que les déplacements :
+ res_deplacement=choix_singe(*move);
+
+ //si les deux sont ok alors on peut lancer le déplacement du bushis :
+ if ((res_demande==1)&&(res_deplacement==1))
+ {
+  change_bushis(*move,plateau);
+ }
+ else
+ {
+  printf("C'est pas bon");
+ }
+}
+
+//#############################################################################################################################################
+
+int boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 {
  // ### comment ###
  //Cette fonction demande les déplacements voulue par le joueur jusqu'a ce qu'ils soient correcte
@@ -23,34 +53,16 @@ void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA]
   res=verif_bushis(*move, plateau);
   if(res==0)
   {
-   printf("La case que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n");
+   printf("\nLa case que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n\n");
   }
  } while (res==0);
 
- 
+ //retour du bon(ou non) fonctionnement : 1=>ok 0=>pas ok 
+ return res;
 
 }
 
-//###########################################################################################################################################
-
-void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
-{
- //#### comment ####
- //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications
- //
- 
- //variables
- int res;
-
- //lancement de la demande :
- boucle_entre_correcte(move, plateau);
-
- //lancement la fonction qui verrifie que le Bushis indiqué par le joueur est bien le bushis qui est dans la case :
- res=verif_bushis(*move, plateau);
-
-}
-
-//##############################################################################################################################################
+//############################################################################################################################################
 
 int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA])
 {
@@ -81,20 +93,13 @@ int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA])
 //########################################################   VERIFS SINGES   ###################################################################
 //##############################################################################################################################################
 
-int choix_singe(deplacement demande)
+int choix_singe(deplacement move)
 {
  int res;
- res=verif_singe(demande);
- if(res==1)
- {
-  printf("Ok\n");
- }
- else
- {
-  printf("Nop\n");
- }
+ res=verif_singe(move);
 
- return 0;
+ //le return si res==0 alors pas bon / si res==1 ok
+ return res;
 }
 
 //##############################################################################################################################################
@@ -192,7 +197,8 @@ int singe_diagonal(deplacement singe)
  verif_ver=singe.y_dep-singe.y_arr;
 
  //calcul du bouleen verif
- verif=(((verif_hor==2)||(verif_hor==-2))&&((verif_ver==2)||(verif_ver==-2)))||(((verif_hor==1)||(verif_hor==-1))&&((verif_ver==1)||(verif_ver==-1))); //le singe si toutes les cases sont vides peut ce déplacer horizontalement verticalement ou horizontalement d'une ou deux cases
+ verif=(((verif_hor==2)||(verif_hor==-2))&&((verif_ver==2)||(verif_ver==-2)))||(((verif_hor==1)||(verif_hor==-1))&&((verif_ver==1)||(verif_ver==-1))); 
+ //le singe si toutes les cases sont vides peut ce déplacer horizontalement verticalement ou horizontalement d'une ou deux cases
 
  //verifications
  if (verif)
@@ -207,3 +213,5 @@ int singe_diagonal(deplacement singe)
  //return qui renvoie si ca a fonctionné ou non
  return res;
 }
+
+

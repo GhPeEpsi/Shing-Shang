@@ -16,7 +16,7 @@ void main()
  int tmp, res	;
  case_pla plateau[HAU_PLA][LAR_PLA];
  deplacement move;
- printf("salut");
+
 
  //on commence par afficher l'entéte :
  //entete();
@@ -28,6 +28,6 @@ void main()
 
  //lancement des verifs
  choix_verif(&move, plateau);
+ aff_pla(plateau);
 
- //choix_singe(move, plateau);
 }
