@@ -49,19 +49,19 @@ void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA]
  //lancement de la fonction qui demande les déplacement dans une boucle while :
  do
  {
-  demande_dep(move);
-  res_bushi=verif_bushis(*move, plateau);
-  res_vide=verif_arrive(*move, plateau);
+   demande_dep(move);
+   res_bushi=verif_bushis(*move, plateau);
+   res_vide=verif_arrive(*move, plateau);
 
-  if(res_bushi==0)
-  {
-   printf("\nLa case de départ que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n\n");
-  }
+   if(res_bushi==0)
+   {
+    printf("\nLa case de départ que vous avez saisie n'est pas en correlation avec le bushi que vous avez saisie\n\n");
+   }
 
-  if(res_vide==0)
-  {
-   printf("\nLa case d'arrivé est déjà rempli\n\n");
-  }
+   if(res_vide==0)
+   {
+    printf("\nLa case d'arrivé est déjà rempli\n\n");
+   }
 
  } while ((res_bushi==0)||(res_vide==0));
 
@@ -231,7 +231,7 @@ int verif_arrive(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
  int res;
 
  //verif :
- if(plateau[move.x_arr][move.y_arr].vide==0)
+ if(plateau[move.x_arr][move.y_arr].vide==1)
  {
   res=1;
  }
