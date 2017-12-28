@@ -106,6 +106,12 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
  plateau[9][7].non_case=plateau[9][7].vide=0;
 
 
+ //TESTS!!!!   debug
+ //plateau[2][2].bushis='L'; 
+ //plateau[2][2].couleur=34;
+ //plateau[2][2].non_case=plateau[2][2].vide=0;
+
+
 
  //######  Singes  ######
  plateau[0][3].bushis='S';   
@@ -190,9 +196,50 @@ void qui_joue(int i)
  
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void pile_face(perso *joueur1, perso *joueur2)
+{
+	int max=1, min=0, hasard;
+	srand(time(NULL));
 
+	hasard = rand()%(max+1-min)+min;
+        //printf("Hasard : %d\n",hasard);  //debugage
 
+	//ON MET LE NUMERO DES joueurS SELON LE RESULTAT DU PILE OU FACE
+	numero_pile_face(joueur1, joueur2, hasard);
+}
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void numero_pile_face(perso *joueur1, perso *joueur2, int hasard)
+{
+	if(hasard==1)
+	{
+	joueur1->numero=1;
+        joueur2->numero=2;
+	}
+	else
+	{
+        joueur2->numero=1;
+        joueur1->numero=2;
+	}
+}
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void decide(perso *joueur1, perso *joueur2, int res_choix)
+{
+	int val;
+
+	if(res_choix==1)
+	{
+	joueur1->numero=1;
+        joueur2->numero=2;
+	}
+	else
+	{
+        joueur2->numero=1;
+        joueur1->numero=2;
+	}
+}

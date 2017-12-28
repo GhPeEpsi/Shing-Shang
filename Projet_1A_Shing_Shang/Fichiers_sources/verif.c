@@ -12,30 +12,28 @@
 void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 {
  //#### comment ####
- //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications et lance la fonction qui deplace le bushis
+ //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications et lance la fonction qui deplace
+ //le bushis
  //
  
  //variables
  int res_deplacement;
 
  //lancement de la demande :
- boucle_entre_correcte(move, plateau);
-
- //lancement la fonction qui verrifie que les déplacements :
- res_deplacement=choix_singe(*move);
+ //lancement la fonction qui verrifie que les déplacements et on recommence tant que c'est pas bon !
+ do
+ {
+  boucle_entre_correcte(move, plateau);
+  res_deplacement=choix_singe(*move, plateau);
+ }while (res_deplacement==0);
 
  //si les deux sont ok alors on peut lancer le déplacement du bushis :
- if (res_deplacement==1)
- {
-  change_bushis(*move,plateau);
- }
- else
- {
-  printf("C'est pas bon");
- }
+ change_bushis(*move,plateau);
+
+
 }
 
-//#############################################################################################################################################
+//##########################################################################################################################################
 
 void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 {
@@ -67,7 +65,7 @@ void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA]
 
 }
 
-//############################################################################################################################################
+//###########################################################################################################################################
 
 int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA])
 {
@@ -94,20 +92,45 @@ int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA])
  return res;
 }
 
-//##############################################################################################################################################
-//########################################################   VERIFS SINGES   ###################################################################
-//##############################################################################################################################################
+//###########################################################################################################################################
+//########################################################   VERIFS SINGES   ################################################################
+//###########################################################################################################################################
 
-int choix_singe(deplacement move)
+int choix_singe(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
 {
- int res;
- res=verif_singe(move);
+ //variables :
+ int res, diff_x, diff_y;
+
+ //calcul des différences
+ diff_x=fabs(move.x_dep-move.x_arr);
+ diff_y=fabs(move.y_dep-move.y_arr);
+ 
+ //choix du type de verif (saut ou simple)
+ if((diff_x==1)||(diff_y==1))
+ {
+  printf("choix_singe : 1\n");
+  res=verif_singe(move);
+ }
+ else 
+ {
+  printf("choix_singe : 2\n");
+  if(trouver_bushi_saute(move, plateau)=='o')
+  {
+   printf("choix_singe : 3\n");
+   res=verif_singe(move);
+  }
+  else
+  {
+   printf("choix_singe : 4\n");
+   res=verif_sauter(plateau, move);
+  }
+ }
 
  //le return si res==0 alors pas bon / si res==1 ok
  return res;
 }
 
-//##############################################################################################################################################
+//###########################################################################################################################################
 
 int verif_singe(deplacement singe)
 {
@@ -139,7 +162,7 @@ int verif_singe(deplacement singe)
  return res;
 }
 
-//##############################################################################################################################################
+//###########################################################################################################################################
 
 int singe_horizontal(deplacement singe) //dans le cas où l'on ne mange pas de bushis
 {
@@ -164,7 +187,7 @@ int singe_horizontal(deplacement singe) //dans le cas où l'on ne mange pas de b
  
 }
 
-//##############################################################################################################################################
+//###########################################################################################################################################
 
 int singe_vertical(deplacement singe)
 {
@@ -190,7 +213,7 @@ int singe_vertical(deplacement singe)
  
 }
 
-//##############################################################################################################################################
+//###########################################################################################################################################
 
 int singe_diagonal(deplacement singe)
 {
@@ -219,7 +242,7 @@ int singe_diagonal(deplacement singe)
  return res;
 }
 
-//##############################################################################################################################################
+//###########################################################################################################################################
 
 int verif_arrive(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
 {
@@ -231,7 +254,7 @@ int verif_arrive(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
  int res;
 
  //verif :
- if(plateau[move.x_arr][move.y_arr].vide==1)
+ if(plateau[move.y_arr][move.x_arr].vide==1)
  {
   res=1;
  }
@@ -243,6 +266,103 @@ int verif_arrive(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
  //retour
  return res;
 }
+
+//###########################################################################################################################################
+
+int verif_sauter(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move)
+{
+ //#### comment ####
+ //cette fonction verifie que l'on peut sauter un bushis 
+ //
+ 
+ //printf("pion sauté : verif_sauter\n ");  //debug 
+
+ //variables :
+ int res,res_arrive, res_bushi_inf;
+ 
+ //verifications de la case d'arrivé :
+ res_arrive=verif_arrive(move, plateau);
+
+ //verifications que le bushi sauté est inférieure :
+ res_bushi_inf=verif_bushi_inf(move, plateau);
+ 
+ if((res_arrive==1)&&(res_bushi_inf==1))
+ {
+  res=1;
+ }
+ else
+ {
+  res=0;
+ }
+
+ return res;
+}
+
+//##########################################################################################################################################
+
+int verif_bushi_inf(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
+{
+ //#### comment ####
+ //cette fonction verifie que le pion sauté est bien inférieure ou égal au pion sauteur :
+
+ //variables :
+ int res; 
+ char sauteur, saute;
+
+ //printf("pion sauté : verif_bushi_inf\n");  //debug 
+
+ //definition des variables char
+ sauteur=plateau[move.y_dep][move.x_dep].bushis;
+ saute=trouver_bushi_saute(move, plateau);
+
+ //
+ if(sauteur<=saute)  //les caractéres sont rangés par ordre alphabétique (a plus petit ; z plus grand, D L S sont rangées dans l'ordre 
+ {                   //inverse d'où le inférieur ou égal ....
+  res=1;
+  //printf("youpi");  //debug
+ }
+ else
+ {
+  res=0;
+  //printf("non");  //debug
+ }
+
+ return res;
+}
+
+//##########################################################################################################################################
+
+char trouver_bushi_saute(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
+{
+ //#### comment ####
+ //Cette fonction retourne le bushis sauté
+ 
+ //variable :
+ char res;
+ int moy_y,moy_x;
+
+ //printf("pion sauté : trouver_bushi_saute\n");  //debug 
+
+ //calcul des cordonées :
+ moy_y=(move.y_dep+move.y_arr)/2;
+ moy_x=(move.x_dep+move.x_arr)/2; //moyenne des déplacements qui doit donner les cordonées du bushis du milieu
+
+ //attribution :
+ res=plateau[moy_y][moy_x].bushis;
+
+ //return :
+ return res;
+
+}
+
+
+
+
+
+
+
+
+
 
 
 

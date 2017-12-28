@@ -2,6 +2,7 @@
 #include "affichage.h"
 #include "verif.h"
 #include "initialisation.h"
+#include "demande.h"
 
 
 void main()
@@ -19,10 +20,22 @@ void main()
 
 
  //on commence par afficher l'entéte :
- //entete();
+ entete();
 
+ //ensuite on remplit le plateau :
  remp_pla(plateau);
 
+ //on demande les noms des joueurs :
+ entre_joueur(1, &pseudo1);
+ entre_joueur(2, &pseudo2); 
+ 
+ //Demande de qui commence :
+ res=qui_commence(&pseudo1, &pseudo2);
+ 
+ //on demande si les joueurs veulent voire les régles :
+ vouloir_regles();
+
+ //puis on lance la partie :
  deroulement(plateau, &move);
  
 }
