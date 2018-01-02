@@ -107,8 +107,8 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 
 
  //TESTS!!!!   debug
- //plateau[2][2].bushis='L'; 
- //plateau[2][2].couleur=34;
+ //plateau[2][2].bushis='S'; 
+ //plateau[2][2].couleur=31;
  //plateau[2][2].non_case=plateau[2][2].vide=0;
 
 
@@ -156,10 +156,10 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement *move)
+void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement *move, bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2)
 {
- //#### Comment ####
- //cette fonction gere le nombre de tour de la partie
+ //#### Comments ####
+ //cette fonction gère le nombre de tours de la partie
  //
 
  //variables :
@@ -168,78 +168,160 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement *move)
  //boucle qui permet la continuité de la partie
  do 
  {
-  qui_joue(i);
+  qui_joue(i, pseudo1, pseudo2); 
   aff_pla(plateau);
-  choix_verif(move, plateau);
+  choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2);
   //res=gagner();
   i++;
+  move->tour=i;
  }while(res!=1);
 
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void qui_joue(int i)
+void qui_joue(int tour, perso *pseudo1, perso *pseudo2)
 {
- //#### comment ####
- //Cette fonction gére l'affichage de qui joue
+ //#### comments ####
+ //Cette fonction gère l'affichage de qui joue
  //
  
- if(i%2==0)
+ if(pseudo1->numero==1)
  {
-  printf("\n\nTour %d c'est au joueur 1 de jouer !\n",i+1);
+    if(tour%2==0)
+    {
+     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo1->nom);
+     pseudo1->couleur=34;
+    }
+    else
+    {
+     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo2->nom);
+     pseudo1->couleur=31;
+    }   
  }
  else
  {
-  printf("\n\nTour %d c'est au joueur 2 de jouer !\n",i+1);
+    if(tour%2==0)
+    {
+     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo2->nom);
+     pseudo1->couleur=34;
+    }
+    else
+    {
+     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo1->	nom);
+     pseudo1->couleur=31;
+    }
  }
  
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void pile_face(perso *joueur1, perso *joueur2)
+void qui_peut_jouer(deplacement *move, perso *pseudo1, perso *pseudo2)
 {
-	int max=1, min=0, hasard;
+ //cette fonction définit qui peut jouer donc quels bushis peuvent être mangés :
+ //
+
+ //printf("Je suis dans qui peut jouer"); debug
+
+ if((move->tour)%2==0)
+ {
+  move->joueur=34;
+ }
+ else
+ { 
+  move->joueur=31;
+ }
+
+ 
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int pile_face(perso *joueur1, perso *joueur2)
+{
+	int max=1, min=0, hasard, res;
 	srand(time(NULL));
 
 	hasard = rand()%(max+1-min)+min;
         //printf("Hasard : %d\n",hasard);  //debugage
 
 	//ON MET LE NUMERO DES joueurS SELON LE RESULTAT DU PILE OU FACE
-	numero_pile_face(joueur1, joueur2, hasard);
+	res=numero_pile_face(joueur1, joueur2, hasard);
+
+        return res;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void numero_pile_face(perso *joueur1, perso *joueur2, int hasard)
+int numero_pile_face(perso *joueur1, perso *joueur2, int hasard)
 {
+        int res;
+   
 	if(hasard==1)
 	{
 	joueur1->numero=1;
         joueur2->numero=2;
+        res=1;
 	}
 	else
 	{
         joueur2->numero=1;
         joueur1->numero=2;
+        res=2;
 	}
+
+        return res;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void decide(perso *joueur1, perso *joueur2, int res_choix)
+int decide(perso *joueur1, perso *joueur2, int res_choix)
 {
-	int val;
+	int res;
 
 	if(res_choix==1)
 	{
 	joueur1->numero=1;
         joueur2->numero=2;
+        res=1;
 	}
 	else
 	{
         joueur2->numero=1;
         joueur1->numero=2;
+        res=2;
 	}
+
+        return res;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void rempli_singe(bushi *tmp)
+{
+ tmp->nb_saut_max=2;
+ tmp->nb_saut_min=1;
+ tmp->bushi='S';
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void rempli_lion(bushi *tmp)
+{
+ tmp->nb_saut_max=1;
+ tmp->nb_saut_min=1;
+ tmp->bushi='L';
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void rempli_dragon(bushi *tmp)
+{
+ tmp->nb_saut_max=0;
+ tmp->nb_saut_min=0;
+ tmp->bushi='D';
+}
+
+
+

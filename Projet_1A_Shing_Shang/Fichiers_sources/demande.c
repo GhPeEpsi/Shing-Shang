@@ -20,8 +20,10 @@ void entre_joueur(int nb, perso *p)
 
 //##############################################################################################################################################
 
-void demande_dep(deplacement *test)
+char demande_dep(deplacement *test)
 {
+        char res;
+ 
 	//demande du type de bushi à déplacer
 	do
 	{
@@ -31,6 +33,9 @@ void demande_dep(deplacement *test)
 	}
 	while((test->bushi != 'D') && (test->bushi != 'S') && (test->bushi != 'L'));
 
+        //enregistrement du bushis qui se déplace :
+        res=test->bushi;
+
 	//demande de la position de départ du bushi à déplacer
 	printf("\nQuelle est la position du Bushi que vous voulez déplacer ?\n");
 	printf("Ligne (départ) :\n");
@@ -38,13 +43,16 @@ void demande_dep(deplacement *test)
 	printf("Colonne (départ) :\n");
 	scanf("%d", &test->x_dep);
 
-    //demande de la position d'arrivée du bushi à déplacer
+        //demande de la position d'arrivée du bushi à déplacer
 	printf("\nOù voulez-vous déplacer votre Bushi ?\n");
 	printf("Ligne (arrivée) :\n");
 	scanf("%d", &test->y_arr);
 	printf("Colonne (arrivée) :\n");
 	scanf("%d", &test->x_arr);
 	while(getchar()!='\n');  //permet d'eviter d'entrer 2 fois le type de bushis au tour suivant
+
+        //retour du bushi qui se déplace :
+        return res;
 }
 
 //#############################################################################################################################################
@@ -52,7 +60,7 @@ void demande_dep(deplacement *test)
 int qui_commence(perso *joueur1, perso *joueur2)
 {
 	//VARIABLES
-	int res_choix;
+	int res_choix, res;
 
 	//CHOIX DE L'ORDRE DE JEU PAR LES joueurS
 	res_choix=ordre_jeu(*joueur1, *joueur2);
@@ -60,18 +68,18 @@ int qui_commence(perso *joueur1, perso *joueur2)
 	//SELON LE CHOIX DES joueurS, ON LANCE LE PILE OU FACE OU ON INITIALISE COMME ILS L'ONT CHOISI
 	if (res_choix==3)
 	{
-		pile_face(joueur1, joueur2);
+		res=pile_face(joueur1, joueur2);
 	}
 	else
 	{
-		decide(joueur1, joueur2, res_choix);
+		res=decide(joueur1, joueur2, res_choix);
 	}
   
         printf("numero joueur %s : %d\n",joueur1->nom,joueur1->numero);
         printf("numero joueur %s : %d\n",joueur2->nom,joueur2->numero);
 
   //retour de qui commence :
-  
+  return res;
 }
 
 //#############################################################################################################################################
@@ -85,10 +93,10 @@ int ordre_jeu(perso joueur1, perso joueur2)
 		printf("\n");
 		printf("'1' --> %s joue en premier\n", joueur1.nom);
 		printf("'2' --> %s joue en premier\n", joueur2.nom);
-		printf("'3' --> On tire a pile ou face !f\n");
+		printf("'3' --> On tire a pile ou face !\n");
 		scanf("%d", &choix);
 	}
-	while((choix!=1) && (choix!=2) && choix!=3);
+	while((choix!=1) && (choix!=2) && (choix!=3));
 
 	//ON RETOURNE CE CHOIX A LA FONCTION MAIN
 	return choix;

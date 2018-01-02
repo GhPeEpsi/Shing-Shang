@@ -1,7 +1,8 @@
-//dans ce fichier on essayer de faire une verif de déplacement :
+//dans ce fichier on fait les verifs de déplacement :
 #include "structures.h"
 #include "verif.h"
 #include "demande.h"
+#include "initialisation.h"
 #include "deplacement.h"
 
 //###########################################################################################################################################
@@ -9,7 +10,7 @@
 //###########################################################################################################################################
 
 
-void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
+void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA], bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2)
 {
  //#### comment ####
  //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications et lance la fonction qui deplace
@@ -17,15 +18,30 @@ void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
  //
  
  //variables
- int res_deplacement;
+ int res_deplacement, res_bonne_equipe;
+ char bushi_deplace;
 
  //lancement de la demande :
  //lancement la fonction qui verrifie que les déplacements et on recommence tant que c'est pas bon !
  do
  {
-  boucle_entre_correcte(move, plateau);
-  res_deplacement=choix_singe(*move, plateau);
- }while (res_deplacement==0);
+  bushi_deplace=boucle_entre_correcte(move, plateau, pseudo1, pseudo2);
+  res_deplacement=choix_bushi(move, plateau, bushi_deplace, singe, lion, dragon);
+  res_bonne_equipe=verif_bonne_equipe(*move, plateau);
+
+  if(res_deplacement==0)
+  {
+    printf("\nVous ne pouvez pas effectuer ce mouvement !!\n\n");   
+  }
+
+  if(res_bonne_equipe==0)
+  {
+    printf("\nHum vous vous êtes trompé d'équipe !!\n\n");   
+  }
+
+ }while((res_deplacement==0)||(res_bonne_equipe==0));
+
+ //printf("\n\nLe Bushi déplacé est le suivant : %c\n\n",bushi_deplace); debug
 
  //si les deux sont ok alors on peut lancer le déplacement du bushis :
  change_bushis(*move,plateau);
@@ -35,7 +51,7 @@ void choix_verif(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
 
 //##########################################################################################################################################
 
-void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA])
+char boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA], perso *pseudo1, perso *pseudo2)
 {
  // ### comment ###
  //Cette fonction demande les déplacements voulue par le joueur jusqu'a ce qu'ils soient correcte
@@ -43,13 +59,18 @@ void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA]
 
  //variables :
  int res_bushi, res_vide;
+ char res;
 
  //lancement de la fonction qui demande les déplacement dans une boucle while :
  do
  {
-   demande_dep(move);
+   res=demande_dep(move);
+   qui_peut_jouer(move, pseudo1, pseudo2);
    res_bushi=verif_bushis(*move, plateau);
    res_vide=verif_arrive(*move, plateau);
+
+   //attribution de qui peut jouer :
+
 
    if(res_bushi==0)
    {
@@ -63,6 +84,8 @@ void boucle_entre_correcte(deplacement *move, case_pla plateau[HAU_PLA][LAR_PLA]
 
  } while ((res_bushi==0)||(res_vide==0));
 
+ //retour du bushis qui doit se déplacer :
+ return res;
 }
 
 //###########################################################################################################################################
@@ -93,13 +116,43 @@ int verif_bushis(deplacement test, case_pla plateau[LAR_PLA][HAU_PLA])
 }
 
 //###########################################################################################################################################
-//########################################################   VERIFS SINGES   ################################################################
+//########################################################   VERIFS DEPLACEMENT   ###########################################################
 //###########################################################################################################################################
 
-int choix_singe(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
+int choix_bushi(deplacement *move, case_pla plateau[LAR_PLA][HAU_PLA], char bushi_deplace, bushi singe, bushi lion, bushi dragon)
+{
+ //#### comment ####
+ //cette fonction permet de choisir pour quel bushi on veut voir les verifs
+ //
+ 
+ int res_deplacement;
+
+ if(bushi_deplace=='S')
+ {
+  res_deplacement=choix_singe(*move, plateau, singe);
+ }
+ 
+ if(bushi_deplace=='L')
+ {
+  res_deplacement=choix_singe(*move, plateau, lion);
+ }
+
+ if(bushi_deplace=='D')
+ {
+  res_deplacement=choix_singe(*move, plateau, dragon);
+ }
+
+ return res_deplacement;
+}
+
+//###########################################################################################################################################
+
+int choix_singe(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA], bushi bushi_dep)
 {
  //variables :
  int res, diff_x, diff_y;
+
+ //printf("\n\n Je suis dans choix_singe le bushis que je deplace est : %c\n\n",bushi_dep.bushi); debug
 
  //calcul des différences
  diff_x=fabs(move.x_dep-move.x_arr);
@@ -108,21 +161,21 @@ int choix_singe(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
  //choix du type de verif (saut ou simple)
  if((diff_x==1)||(diff_y==1))
  {
-  printf("choix_singe : 1\n");
-  res=verif_singe(move);
+  //printf("choix_singe : 1\n"); debug
+  res=verif_singe(move, bushi_dep);
  }
  else 
  {
-  printf("choix_singe : 2\n");
+  //printf("choix_singe : 2\n"); debug
   if(trouver_bushi_saute(move, plateau)=='o')
   {
-   printf("choix_singe : 3\n");
-   res=verif_singe(move);
+   //printf("choix_singe : 3\n"); debug
+   res=verif_singe(move, bushi_dep);
   }
   else
   {
-   printf("choix_singe : 4\n");
-   res=verif_sauter(plateau, move);
+   //printf("choix_singe : 4\n"); debug
+   res=verif_sauter(plateau, move, bushi_dep);
   }
  }
 
@@ -132,29 +185,29 @@ int choix_singe(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
 
 //###########################################################################################################################################
 
-int verif_singe(deplacement singe)
+int verif_singe(deplacement move, bushi bushi_deplace)
 {
  //declaration des variables :
  int diff_x, diff_y, res;
  
- //calcul des differances avant le if pour simplifier l'écriture
- diff_x=fabs(singe.x_dep-singe.x_arr);
- diff_y=fabs(singe.y_dep-singe.y_arr);
+ //calcul des differences avant le if pour simplifier l'écriture
+ diff_x=fabs(move.x_dep-move.x_arr);
+ diff_y=fabs(move.y_dep-move.y_arr);
  
 
  if((diff_x!=0)&&(diff_y!=0))      //si les absisses et les ordonnée changent alors le deplacement est 
  {                                 //en diagonal ou faux donc debut de la fonction diagonal
-   res=singe_diagonal(singe);
+   res=singe_diagonal(move, bushi_deplace);
  }
  else
  {
    if(diff_y==0)     //sinon si les ordonnées sont les même au depart et a l'arrivé alors le deplacement est horizontale
    {
-    res=singe_horizontal(singe);
+    res=singe_horizontal(move, bushi_deplace);
    }
    else
    {
-    res=singe_vertical(singe);   //et puis si il n'y a rien d'enclenché au dessus c'est un déplacement vertical ou c'est mauvé ...
+    res=singe_vertical(move, bushi_deplace);   //et puis si il n'y a rien d'enclenché au dessus c'est un déplacement vertical ou c'est mauvé ...
    }
  }
  
@@ -164,16 +217,20 @@ int verif_singe(deplacement singe)
 
 //###########################################################################################################################################
 
-int singe_horizontal(deplacement singe) //dans le cas où l'on ne mange pas de bushis
+int singe_horizontal(deplacement singe, bushi bushi_deplace) //dans le cas où l'on ne mange pas de bushis
 {
  //declaration des variables :
- int verif, res;
+ int verif, res, dep_min, dep_max;
 
  //calcul de la verif : 
  verif=singe.x_dep-singe.x_arr;
+ 
+ //calcul longueur de déplacement :
+ dep_min=bushi_deplace.nb_saut_min;
+ dep_max=bushi_deplace.nb_saut_max;
 
  //verifications
- if((verif==2)||(verif==-2)||(verif==-1)||(verif==1))
+ if((verif==dep_max)||(verif==-dep_max)||(verif==-dep_min)||(verif==dep_min))
  {
   res=1; //res booleen donc si res=1 le déplacement est correct
  }
@@ -189,16 +246,20 @@ int singe_horizontal(deplacement singe) //dans le cas où l'on ne mange pas de b
 
 //###########################################################################################################################################
 
-int singe_vertical(deplacement singe)
+int singe_vertical(deplacement singe, bushi bushi_deplace)
 {
  //declaration des variables :
- int verif, res;
+ int verif, res, dep_min, dep_max;
 
  //calcul de la verif : 
  verif=singe.y_dep-singe.y_arr;
 
+ //calcul longueur de déplacement :
+ dep_min=bushi_deplace.nb_saut_min;
+ dep_max=bushi_deplace.nb_saut_max;
+
  //verifications
- if((verif==2)||(verif==-2)||(verif==-1)||(verif==1))
+ if((verif==dep_max)||(verif==-dep_max)||(verif==-dep_min)||(verif==dep_min))
  {
   res=1; //res booleen donc si res=1 le déplacement est correct
  }
@@ -215,17 +276,21 @@ int singe_vertical(deplacement singe)
 
 //###########################################################################################################################################
 
-int singe_diagonal(deplacement singe)
+int singe_diagonal(deplacement singe, bushi bushi_deplace)
 {
  //declaration des variables :
- int verif_hor, verif_ver, res, verif;
+ int verif_hor, verif_ver, res, verif, dep_min, dep_max;
 
  //calcul de la verif : 
  verif_hor=singe.x_dep-singe.x_arr;
  verif_ver=singe.y_dep-singe.y_arr;
 
+ //calcul longueur de déplacement :
+ dep_min=bushi_deplace.nb_saut_min;
+ dep_max=bushi_deplace.nb_saut_max;
+
  //calcul du bouleen verif
- verif=(((verif_hor==2)||(verif_hor==-2))&&((verif_ver==2)||(verif_ver==-2)))||(((verif_hor==1)||(verif_hor==-1))&&((verif_ver==1)||(verif_ver==-1))); 
+ verif=(((verif_hor==dep_min)||(verif_hor==-dep_min))&&((verif_ver==dep_min)||(verif_ver==-dep_min)))||(((verif_hor==dep_max)||(verif_hor==-dep_max))&&((verif_ver==dep_max)||(verif_ver==-dep_max))); 
  //le singe si toutes les cases sont vides peut ce déplacer horizontalement verticalement ou horizontalement d'une ou deux cases
 
  //verifications
@@ -269,7 +334,7 @@ int verif_arrive(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
 
 //###########################################################################################################################################
 
-int verif_sauter(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move)
+int verif_sauter(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move, bushi bushi_deplace)
 {
  //#### comment ####
  //cette fonction verifie que l'on peut sauter un bushis 
@@ -295,7 +360,33 @@ int verif_sauter(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move)
   res=0;
  }
 
+ //lancement de la fonction qui verifie si le pion sauté est allié ou ennemi :
+ manger(plateau, move);
+ 
  return res;
+}
+
+//##########################################################################################################################################
+
+void manger(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move)
+{
+ //####  Comment  ####
+ //cette fonction regarde si le pion sauté est enemie, si il est enemi alors on l'enléve :
+ 
+ //variables :
+ char saute;
+
+ //printf("Debug je suis dans la fonction manger");  debug
+
+ //détermination du bushi sauté
+ saute=trouver_bushi_saute(move, plateau);
+
+ //traitement :
+ if(plateau[move.y_dep][move.x_dep].couleur!=plateau[(move.y_dep+move.y_arr)/2][(move.x_dep+move.x_arr)/2].couleur)
+ {
+  retirer_bushis(plateau, move);
+ }
+
 }
 
 //##########################################################################################################################################
@@ -355,14 +446,23 @@ char trouver_bushi_saute(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
 
 }
 
+//##########################################################################################################################################
+
+int verif_bonne_equipe(deplacement move, case_pla plateau[LAR_PLA][HAU_PLA])
+{
+ int res;
+ 
+ if(move.joueur==plateau[move.y_dep][move.x_dep].couleur)
+ {
+  res=1;
+ }
+ else
+ {
+  res=0;
+ }
 
 
-
-
-
-
-
-
-
+ return res;
+}
 
 
