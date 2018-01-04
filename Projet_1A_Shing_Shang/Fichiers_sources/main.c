@@ -16,7 +16,7 @@ void main()
  perso pseudo1, pseudo2;
  int tmp, res;
  case_pla plateau[HAU_PLA][LAR_PLA];
- deplacement move;
+ deplacement move[MAX_SAUTS];
  bushi lion, dragon, singe;
 
 
@@ -41,6 +41,6 @@ void main()
  vouloir_regles();
 
  //puis on lance la partie :
- deroulement(plateau, &move, singe, lion, dragon, &pseudo1, &pseudo2);
+ deroulement(plateau, move, singe, lion, dragon, &pseudo1, &pseudo2);
  
 }

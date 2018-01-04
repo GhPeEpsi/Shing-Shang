@@ -107,9 +107,13 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 
 
  //TESTS!!!!   debug
- //plateau[2][2].bushis='S'; 
- //plateau[2][2].couleur=31;
- //plateau[2][2].non_case=plateau[2][2].vide=0;
+ plateau[2][2].bushis='S'; 
+ plateau[2][2].couleur=31;
+ plateau[2][2].non_case=plateau[2][2].vide=0;
+
+ plateau[4][2].bushis='S'; 
+ plateau[4][2].couleur=31;
+ plateau[4][2].non_case=plateau[2][2].vide=0;
 
 
 
@@ -156,25 +160,47 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement *move, bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2)
+void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS], bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2)
 {
  //#### Comments ####
  //cette fonction gère le nombre de tours de la partie
  //
 
  //variables :
- int i=0, res;
+ int i=0, res=0, j=0;
+ move[j].saute=0; //met a 0 le bit (saute de la structure deplacement) qui permet de savoir si pendant le tour il y a eu un bushis de sauté
 
  //boucle qui permet la continuité de la partie
  do 
  {
-  qui_joue(i, pseudo1, pseudo2); 
-  aff_pla(plateau);
-  choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2);
-  //res=gagner();
-  i++;
-  move->tour=i;
- }while(res!=1);
+   qui_joue(i, pseudo1, pseudo2);
+   aff_rejouer(move);
+   aff_pla(plateau);
+   choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2, j);
+   
+   if(move[j].saute==0)  //est ce qu'il y a eu un saut a ce tour ?
+   {
+    j++;
+    if((j>=2)&&(1/*move[j].enemi_saute*/))  //est ce qu'il y a shing shang et est-ce qu'il y a eu saut d'un ennemi
+    {
+     printf("Enlever le dernier bushis sautées");
+     printf("Nouveau Tour avec un autre bushis");
+    }
+    else
+    {
+     printf("autre sauts possible avec le même bushis");
+    }
+   }
+   else
+   { 
+    j=0;
+    i++;
+    move[j].tour=i;
+   }
+
+   //res=gagner();
+
+ }while(res!=1); //ancienne boucle (move[j-1].saute==1);
 
 }
 
@@ -190,12 +216,12 @@ void qui_joue(int tour, perso *pseudo1, perso *pseudo2)
  {
     if(tour%2==0)
     {
-     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo1->nom);
+     aff_qui_joue(*pseudo1, tour);
      pseudo1->couleur=34;
     }
     else
     {
-     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo2->nom);
+     aff_qui_joue(*pseudo2, tour);
      pseudo1->couleur=31;
     }   
  }
@@ -203,12 +229,12 @@ void qui_joue(int tour, perso *pseudo1, perso *pseudo2)
  {
     if(tour%2==0)
     {
-     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo2->nom);
+     aff_qui_joue(*pseudo2, tour);
      pseudo1->couleur=34;
     }
     else
     {
-     printf("\n\nTour %d c'est a %s de jouer !\n",tour+1, pseudo1->	nom);
+     aff_qui_joue(*pseudo1, tour);
      pseudo1->couleur=31;
     }
  }
@@ -217,20 +243,20 @@ void qui_joue(int tour, perso *pseudo1, perso *pseudo2)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void qui_peut_jouer(deplacement *move, perso *pseudo1, perso *pseudo2)
+void qui_peut_jouer(deplacement move[MAX_SAUTS], perso *pseudo1, perso *pseudo2)
 {
  //cette fonction définit qui peut jouer donc quels bushis peuvent être mangés :
  //
 
  //printf("Je suis dans qui peut jouer"); debug
 
- if((move->tour)%2==0)
+ if((move[0].tour)%2==0)
  {
-  move->joueur=34;
+  move[0].joueur=34;
  }
  else
  { 
-  move->joueur=31;
+  move[0].joueur=31;
  }
 
  
@@ -244,7 +270,7 @@ int pile_face(perso *joueur1, perso *joueur2)
 	srand(time(NULL));
 
 	hasard = rand()%(max+1-min)+min;
-        //printf("Hasard : %d\n",hasard);  //debugage
+        //printf("Hasard : %d\n",hasard);  //debug
 
 	//ON MET LE NUMERO DES joueurS SELON LE RESULTAT DU PILE OU FACE
 	res=numero_pile_face(joueur1, joueur2, hasard);

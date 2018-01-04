@@ -147,3 +147,27 @@ void ecrire_pseudo(perso pseudo)
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void aff_qui_joue(perso joueur, int nb)
+{
+ if(joueur.numero==1)
+ {
+  printf("\n\nTour %d c'est a %s de jouer avec les Bleus! \n",nb+1, joueur.nom);
+ }
+ else
+ {
+  printf("\n\nTour %d c'est a %s de jouer avec les Rouges !\n",nb+1, joueur.nom);
+ }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void aff_rejouer(deplacement move[MAX_SAUTS])
+{
+ if(move[0].saute==1)
+ {
+  printf("\nVous pouvez refaire un saut avec le même bushis !\n");
+ }
+
+}
