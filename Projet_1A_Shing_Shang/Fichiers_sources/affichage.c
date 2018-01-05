@@ -163,11 +163,23 @@ void aff_qui_joue(perso joueur, int nb)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void aff_rejouer(deplacement move[MAX_SAUTS])
+void aff_rejouer(deplacement move[MAX_SAUTS], int j)
 {
- if(move[0].saute==1)
+ if(move[j].saute==1)
  {
   printf("\nVous pouvez refaire un saut avec le même bushis !\n");
  }
-
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void aff_vouloir_rejouer()
+{
+ printf("\nVoulez vous refaire un saut avec le même bushis ? 1 si oui ; 2 si non => \n");
+}
+
+
+
+
+
+

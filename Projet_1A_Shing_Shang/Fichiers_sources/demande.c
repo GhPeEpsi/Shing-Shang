@@ -2,6 +2,7 @@
 #include "structures.h"
 #include "demande.h"
 #include "initialisation.h"
+#include "affichage.h"
 
 
 void entre_joueur(int nb, perso *p)
@@ -22,30 +23,28 @@ void entre_joueur(int nb, perso *p)
 
 char choix_demande_dep(deplacement test[MAX_SAUTS], int j)
 {
- char res;
  if(j==0)
  {
-  printf("Choix_demande_dep : j==0 "); //debug
-  res=demande_dep_dep(test, j);
+  //printf("Choix_demande_dep : j==0 "); //debug
+  demande_dep_dep(test, j);
   demande_dep_arr(test, j);
  }
  else
  {
   if(test[j-1].saute==1)
   {
-   printf("Choix_demande_dep : j!=0 et il y a deja eu un saut"); //debug
+   //printf("Choix_demande_dep : j!=0 et il y a deja eu un saut"); //debug
+   recupe_cordo(test, j);   
    demande_dep_arr(test, j);
-   recupe_cordo(test, j);
   }
   else
   {
-   printf("Choix_demande_dep : j!=0 et il n'y a pas deja eu de saut"); //debug
-   res=demande_dep_dep(test, j);
+   //printf("Choix_demande_dep : j!=0 et il n'y a pas deja eu de saut"); //debug
+   demande_dep_dep(test, j);
    demande_dep_arr(test, j);
   }
  }
  
- return res;
 }
 
 //##############################################################################################################################################
@@ -53,19 +52,17 @@ char choix_demande_dep(deplacement test[MAX_SAUTS], int j)
 int recupe_cordo(deplacement move[MAX_SAUTS], int j)
 {
  
- printf("pion sauté : recup_cordo\n ");  //debug 
+ //printf("pion sauté : recup_cordo\n ");  //debug 
 
- move[j].bushi=move[j-1].bushi; printf("%c",move[j].bushi);
- move[j].x_dep=move[j-1].x_arr; printf("%d",move[j].x_dep);
- move[j].y_dep=move[j-1].y_arr; printf("%d",move[j].y_dep);
+ move[j].bushi=move[j-1].bushi; //printf("%c",move[j].bushi); //debug
+ move[j].x_dep=move[j-1].x_arr; //printf("%d",move[j].x_dep); //debug
+ move[j].y_dep=move[j-1].y_arr; //printf("%d",move[j].y_dep); //debug
 }
 
 //##############################################################################################################################################
 
 char demande_dep_dep(deplacement test[MAX_SAUTS], int j)
-{
- char res;
- 
+{ 
  //demande du type de bushi à déplacer
  do
  {
@@ -75,18 +72,12 @@ char demande_dep_dep(deplacement test[MAX_SAUTS], int j)
  }
  while((test[j].bushi != 'D') && (test[j].bushi != 'S') && (test[j].bushi != 'L'));
 
- //enregistrement du bushis qui se déplace :
- res=test[j].bushi;
-
  //demande de la position de départ du bushi à déplacer
  printf("\nQuelle est la position du Bushi que vous voulez déplacer ?\n");
  printf("Ligne (départ) :\n");
  scanf("%d", &test[j].y_dep);
  printf("Colonne (départ) :\n");
  scanf("%d", &test[j].x_dep);
-
- //retour du bushi qui se déplace :
- return res;
 }
 
 //##############################################################################################################################################
@@ -151,6 +142,33 @@ int ordre_jeu(perso joueur1, perso joueur2)
 	return choix;
 }
 
-//#############################################################################################################################################
+//###########################################################################################################################################
+
+int vouloir_autre_saut(deplacement move[MAX_SAUTS], int j)
+{
+ //comment :
+ //cette fonction sert a demander si le joueur beux refair un saut avec le même bushis :
+ //
+ 
+ int i, res=0; 
+
+ if(move[j].saute==1)
+ {
+  aff_vouloir_rejouer();
+  scanf("%d",&i);
+  while(getchar() !='\n');
+
+  if(i==1) 
+  {
+   res=1;
+  }
+  else
+  {
+   res=0;
+  }
+ }
+
+return res;
+}
 
 

@@ -11,3 +11,4 @@ int recupe_cordo(deplacement move[MAX_SAUTS], int j);
 void entre_joueur(int nb, perso *p);
 int ordre_jeu(perso joueur1, perso joueur2);
 int qui_commence(perso *joueur1, perso *joueur2);
+int vouloir_autre_saut(deplacement move[MAX_SAUTS], int j);

@@ -3,6 +3,7 @@
 #include "initialisation.h"
 #include "affichage.h"
 #include "verif.h"
+#include "demande.h"
 
 void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 {
@@ -167,35 +168,44 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
  //
 
  //variables :
- int i=0, res=0, j=0;
+ int i=0, res=0, j=0, res_autre_saut;
+ comp_der compteur;
  move[j].saute=0; //met a 0 le bit (saute de la structure deplacement) qui permet de savoir si pendant le tour il y a eu un bushis de sauté
+ initia_compteur(&compteur);
 
  //boucle qui permet la continuité de la partie
  do 
- {
+ { 
+   //printf("debug : Deroulement : i=%d ; j=%d\n",i,j); //debug
+   compteur.nb_sauts=j;
    qui_joue(i, pseudo1, pseudo2);
-   aff_rejouer(move);
+   aff_rejouer(move, j);
    aff_pla(plateau);
-   choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2, j);
-   
-   if(move[j].saute==0)  //est ce qu'il y a eu un saut a ce tour ?
+   choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2, &compteur);
+
+   res_autre_saut=vouloir_autre_saut(move, j);  //fonction qui demande si le joueur veut refaire un saut (si il a déjà fait un saut)
+                                                // ou s'il veut jouer avec un autre bushi après le shing-shang  
+   if((move[j].saute==1)&&(res_autre_saut==1))  //est ce qu'il y a eu un saut a ce tour et est ce qu'il veut resauter ?
    {
-    j++;
-    if((j>=2)&&(1/*move[j].enemi_saute*/))  //est ce qu'il y a shing shang et est-ce qu'il y a eu saut d'un ennemi
-    {
-     printf("Enlever le dernier bushis sautées");
-     printf("Nouveau Tour avec un autre bushis");
-    }
-    else
-    {
-     printf("autre sauts possible avec le même bushis");
-    }
+      //printf("\nCC\n");  //debug
+      if((j>=2)&&(compteur.nb_bushis_enemi_saute!=0))  //est ce qu'il y a shing shang et est-ce qu'il y a eu saut d'un ennemi
+      {
+       j=0;
+       printf("Enlever le dernier bushi sauté");
+       printf("Nouveau Tour avec un autre bushis");
+       initia_compteur(&compteur);
+      }
+      else
+      {
+       j++;
+      }
    }
    else
    { 
-    j=0;
-    i++;
-    move[j].tour=i;
+      j=0;
+      i++;
+      move[j].tour=i;
+      initia_compteur(&compteur);
    }
 
    //res=gagner();
@@ -243,7 +253,7 @@ void qui_joue(int tour, perso *pseudo1, perso *pseudo2)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void qui_peut_jouer(deplacement move[MAX_SAUTS], perso *pseudo1, perso *pseudo2)
+void qui_peut_jouer(deplacement move[MAX_SAUTS], perso *pseudo1, perso *pseudo2, int j)
 {
  //cette fonction définit qui peut jouer donc quels bushis peuvent être mangés :
  //
@@ -252,11 +262,11 @@ void qui_peut_jouer(deplacement move[MAX_SAUTS], perso *pseudo1, perso *pseudo2)
 
  if((move[0].tour)%2==0)
  {
-  move[0].joueur=34;
+  move[j].joueur=34;
  }
  else
- { 
-  move[0].joueur=31;
+ {
+  move[j].joueur=31;
  }
 
  
@@ -348,6 +358,25 @@ void rempli_dragon(bushi *tmp)
  tmp->nb_saut_min=0;
  tmp->bushi='D';
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int initia_compteur(comp_der *compteur)
+{
+ compteur->nb_sauts=0;     //définit combien de saut a effectué le bushis pendant le tour
+ compteur->shing_shang=0;
+ 
+ for(int i=0 ; i<compteur->nb_bushis_enemi_saute ; i++)
+ {
+  compteur->bushis_enemi_saute[i]=0;
+ }
+
+ compteur->nb_bushis_enemi_saute=0;
+ 
+
+ return 0;
+}
+
 
 
 
