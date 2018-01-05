@@ -34,8 +34,7 @@ void main()
  entre_joueur(2, &pseudo2); 
  
  //Demande de qui commence :
- res=qui_commence(&pseudo1, &pseudo2); //sert a rien pour le moment
- 
+ res=qui_commence(&pseudo1, &pseudo2); 
  
  //on demande si les joueurs veulent voir les règles :
  vouloir_regles();

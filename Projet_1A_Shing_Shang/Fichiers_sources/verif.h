@@ -21,7 +21,7 @@ int verif_arrive(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA]
 int verif_sauter(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS], bushi bushi_dep, comp_der *compteur);
 int verif_bushi_inf(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
 char trouver_bushi_saute(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
-void manger(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS], int j);
+void manger(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS], comp_der *compteur);
 int verif_bonne_equipe(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
 
 

@@ -167,6 +167,10 @@ int vouloir_autre_saut(deplacement move[MAX_SAUTS], int j)
    res=0;
   }
  }
+ else
+ {
+  res=0;
+ }
 
 return res;
 }

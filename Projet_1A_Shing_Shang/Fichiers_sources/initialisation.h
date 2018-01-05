@@ -1,4 +1,3 @@
-
 #include "structures.h"
 
 
@@ -15,4 +14,7 @@ void rempli_dragon(bushi *tmp);
 void rempli_singe(bushi *tmp);
 void rempli_lion(bushi *tmp);
 int initia_compteur(comp_der *compteur);
+int couleur_differente(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
+void storer(int couleur, comp_der *compteur);
+void initia_move(deplacement move[MAX_SAUTS], int j);
 

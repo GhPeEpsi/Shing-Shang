@@ -46,12 +46,12 @@ void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA]
  //printf("\n\nLe Bushi déplacé est le suivant : %c\n\n",bushi_deplace); debug
 
  //si les deux sont ok alors on peut lancer le déplacement du bushis :
- change_bushis(move, plateau, compteur);
+ change_bushis(move, plateau, *compteur);
 }
 
 //##########################################################################################################################################
 
-char boucle_entre_correcte(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA], perso *pseudo1, perso *pseudo2, der_comp *compteur)
+char boucle_entre_correcte(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA], perso *pseudo1, perso *pseudo2, comp_der *compteur)
 {
  // ### comment ###
  //Cette fonction demande les déplacements voulue par le joueur jusqu'a ce qu'ils soient correcte
@@ -106,8 +106,8 @@ int verif_bushis(deplacement test[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA]
  char caract_bushi;
 
  //transformations des variables de positions :
- i=test[k].y_dep;
- j=test[k].x_dep;
+ i=test[compteur->nb_sauts].y_dep;
+ j=test[compteur->nb_sauts].x_dep;
  caract_bushi=plateau[i][j].bushis;
 
  //verification du Bushis :
@@ -175,7 +175,7 @@ int choix_singe(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA],
  //choix du type de verif (saut ou simple)
  if(move[compteur->nb_sauts-1].saute==1)
  {
-  printf("debug : choix_singe move j-1==1");
+  //printf("debug : choix_singe move j-1==1");
   res=verif_sauter(plateau, move, bushi_dep, compteur);
  }
  else 
@@ -183,19 +183,19 @@ int choix_singe(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA],
       if((diff_x==1)||(diff_y==1))
       {
        res=verif_singe(move, bushi_dep);
-       printf("debug : choix_singe dep normal 1 : res_...=%d\n",res); //debug
+       //printf("debug : choix_singe dep normal 1 : res_...=%d\n",res); //debug
       }
       else 
       { 
            if(trouver_bushi_saute(move, plateau, compteur->nb_sauts)=='o')
            {
             res=verif_singe(move, bushi_dep);
-            printf("debug : choix_singe dep_normal 2 : res_...=%d\n",res); //debug
+            //printf("debug : choix_singe dep_normal 2 : res_...=%d\n",res); //debug
            }
            else
            {
             res=verif_sauter(plateau, move, bushi_dep, compteur);
-            printf("debug : choix_singe sauter : res_...=%d\n",res); //debug
+            //printf("debug : choix_singe sauter : res_...=%d\n",res); //debug
            }
       }
   }
@@ -367,38 +367,35 @@ int verif_sauter(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS]
  //printf("debug : verif_sauter\n ");  //debug 
 
  //variables :
- int res,res_arrive, res_bushi_inf, ver, hor, verif;
+ int res,res_arrive, res_bushi_inf, ver, hor, verif, couleur;
  hor=fabs(move[compteur->nb_sauts].x_dep-move[compteur->nb_sauts].x_arr);
  ver=fabs(move[compteur->nb_sauts].y_dep-move[compteur->nb_sauts].y_arr);
 
- printf("debug : verif_sauter : hor=%d\n",hor);  //debug 
- printf("debug : verif_sauter : ver=%d\n",ver);  //debug 
+ //printf("debug : verif_sauter : hor=%d\n",hor);  //debug 
+ //printf("debug : verif_sauter : ver=%d\n",ver);  //debug 
 
 
  //verifications que le bushi sauté est inférieure :
  res_bushi_inf=verif_bushi_inf(move, plateau, compteur->nb_sauts);
- printf("debug : verif_sauter : bushi inf res_...=%d\n",res_bushi_inf); //debug
+ //printf("debug : verif_sauter : bushi inf res_...=%d\n",res_bushi_inf); //debug
 
  //calcul du bit de verification :
  verif=((res_bushi_inf==1)&&(((hor==2)||(hor==0))&&((ver==2)||(ver==0))));
- printf("debug : verif_sauter : verif=%d\n",verif);  //debug 
+ //printf("debug : verif_sauter : verif=%d\n",verif);  //debug 
  
  if(verif)
  {
   //printf("debug : verif_sauter : 1\n ");  //debug 
   res=1;
   move[compteur->nb_sauts].saute=1;
-  //move[j].nb_sauts++;
+  couleur=couleur_differente(move, plateau, compteur->nb_sauts);
+  storer(couleur, compteur);
  }
  else
  {
   res=0;
   move[compteur->nb_sauts].saute=0;
  }
-
- //lancement de la fonction qui verifie si le pion sauté est allié ou ennemi :
- manger(plateau, move, compteur->nb_sauts);
- 
  
  //printf("debug : verif_sauter : res_...=%d\n",res); //debug
  return res;
@@ -406,27 +403,18 @@ int verif_sauter(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS]
 
 //##########################################################################################################################################
 
-void manger(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS], int j)
+void manger(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS], comp_der *compteur)
 {
  //####  Comment  ####
  //cette fonction regarde si le pion sauté est enemie, si il est enemi alors on l'enléve :
  
  //variables :
  char saute;
+ int couleur;
 
  //printf("Debug : manger\n");  //debug
 
- //détermination du bushi sauté
- //printf("debug : manger : trouver_bushi_saute\n"); //debug
- saute=trouver_bushi_saute(move, plateau, j);
-
- //traitement :
- //printf("debug : manger\n"); //debug
- if(plateau[move[j].y_dep][move[j].x_dep].couleur!=plateau[(move[j].y_dep+move[j].y_arr)/2][(move[j].x_dep+move[j].x_arr)/2].couleur)
- {
-  //printf("debug : manger\n"); //debug
-  retirer_bushis(plateau, move, j);
- }
+ retirer_bushis(plateau, move, *compteur);
 
 }
 

@@ -175,7 +175,7 @@ void aff_rejouer(deplacement move[MAX_SAUTS], int j)
 
 void aff_vouloir_rejouer()
 {
- printf("\nVoulez vous refaire un saut avec le même bushis ? 1 si oui ; 2 si non => \n");
+ printf("\nVoulez vous refaire un saut avec le même bushis ? 1 si oui ; 0 si non => ");
 }
 
 

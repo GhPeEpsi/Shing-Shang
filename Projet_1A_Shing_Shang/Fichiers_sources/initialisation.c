@@ -4,6 +4,7 @@
 #include "affichage.h"
 #include "verif.h"
 #include "demande.h"
+#include "deplacement.h"
 
 void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 {
@@ -170,34 +171,47 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
  //variables :
  int i=0, res=0, j=0, res_autre_saut;
  comp_der compteur;
- move[j].saute=0; //met a 0 le bit (saute de la structure deplacement) qui permet de savoir si pendant le tour il y a eu un bushis de sauté
  initia_compteur(&compteur);
+ initia_move(move, j);
 
  //boucle qui permet la continuité de la partie
  do 
  { 
-   //printf("debug : Deroulement : i=%d ; j=%d\n",i,j); //debug
+   //printf("debug 1 : Deroulement : i=%d ; j=%d\n",i,j); //debug
    compteur.nb_sauts=j;
    qui_joue(i, pseudo1, pseudo2);
-   aff_rejouer(move, j);
+   aff_rejouer(move, j);  //à modifier
    aff_pla(plateau);
    choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2, &compteur);
 
    res_autre_saut=vouloir_autre_saut(move, j);  //fonction qui demande si le joueur veut refaire un saut (si il a déjà fait un saut)
-                                                // ou s'il veut jouer avec un autre bushi après le shing-shang  
-   if((move[j].saute==1)&&(res_autre_saut==1))  //est ce qu'il y a eu un saut a ce tour et est ce qu'il veut resauter ?
+                                                // ou s'il veut jouer avec un autre bushi après le shing-shang
+   //printf("debug 2 : Deroulement : i=%d ; j=%d\n",i,j); //debug
+  
+   if(move[j].saute==1)  //est ce qu'il y a eu un saut a ce tour et est ce que le joueur veut resauter ?
    {
+      j++;
       //printf("\nCC\n");  //debug
+      //printf("debug 2 : Deroulement : compteur.nb_bushis_enemi_saute=%d ; j=%d\n",compteur.nb_bushis_enemi_saute,j); //debug
       if((j>=2)&&(compteur.nb_bushis_enemi_saute!=0))  //est ce qu'il y a shing shang et est-ce qu'il y a eu saut d'un ennemi
       {
-       j=0;
-       printf("Enlever le dernier bushi sauté");
-       printf("Nouveau Tour avec un autre bushis");
-       initia_compteur(&compteur);
+         //printf("debug : deroulement : shing shang\n");
+         retirer_bushis(plateau, move, compteur);
+         initia_move(move, j);
+         initia_compteur(&compteur);
+         j=0;
       }
       else
       {
-       j++;
+       if(res_autre_saut==0)
+         {
+          //printf("debug n°3");
+          i++;
+          initia_move(move, j);
+          move[0].tour=i;
+          initia_compteur(&compteur);
+          j=0;
+         }
       }
    }
    else
@@ -206,7 +220,9 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
       i++;
       move[j].tour=i;
       initia_compteur(&compteur);
+      initia_move(move, j);
    }
+
 
    //res=gagner();
 
@@ -222,30 +238,36 @@ void qui_joue(int tour, perso *pseudo1, perso *pseudo2)
  //Cette fonction gère l'affichage de qui joue
  //
  
+ //printf("debug : qui_joue\n");//debug
+
  if(pseudo1->numero==1)
  {
+    //printf("debug : qui_joue : 1\n");//debug
     if(tour%2==0)
     {
      aff_qui_joue(*pseudo1, tour);
-     pseudo1->couleur=34;
+     //pseudo1->couleur=34;
+     //printf("debug : qui_joue : 1.1\n");//debug
     }
     else
     {
      aff_qui_joue(*pseudo2, tour);
-     pseudo1->couleur=31;
+     //pseudo1->couleur=31;
+     //printf("debug : qui_joue : 1.2\n");//debug
     }   
  }
  else
  {
+   //printf("debug : qui_joue : 2");//debug
     if(tour%2==0)
     {
      aff_qui_joue(*pseudo2, tour);
-     pseudo1->couleur=34;
+     //pseudo1->couleur=34;
     }
     else
     {
      aff_qui_joue(*pseudo1, tour);
-     pseudo1->couleur=31;
+     //pseudo1->couleur=31;
     }
  }
  
@@ -255,11 +277,11 @@ void qui_joue(int tour, perso *pseudo1, perso *pseudo2)
 
 void qui_peut_jouer(deplacement move[MAX_SAUTS], perso *pseudo1, perso *pseudo2, int j)
 {
- //cette fonction définit qui peut jouer donc quels bushis peuvent être mangés :
+ //cette fonction définit qui peut jouer donc quels bushis peuvent être bougés :
  //
 
- //printf("Je suis dans qui peut jouer"); debug
-
+ //printf("Je suis dans qui peut jouer move[0].tour=%d\n",move[0].tour); //debug
+ 
  if((move[0].tour)%2==0)
  {
   move[j].joueur=34;
@@ -376,6 +398,60 @@ int initia_compteur(comp_der *compteur)
 
  return 0;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int couleur_differente(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j)
+{
+ //variables :
+ int moy_x, moy_y, res;
+
+ //calcul des moyennes :
+ moy_x=(move[j].x_dep+move[j].x_arr)/2;
+ moy_y=(move[j].y_dep+move[j].y_arr)/2;
+
+ if(plateau[move[j].y_dep][move[j].x_dep].couleur!=plateau[moy_y][moy_x].couleur)
+ {
+  res=1;
+ }
+ else
+ {
+  res=0;
+ }
+
+ return res;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void storer(int couleur, comp_der *compteur)
+{
+ if(couleur=1)
+ {
+  //printf("debug : nb_bushis_enemi_saute=%d",compteur->nb_bushis_enemi_saute);
+  compteur->nb_bushis_enemi_saute++;
+  compteur->bushis_enemi_saute[compteur->nb_bushis_enemi_saute]=compteur->nb_sauts;
+ }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void initia_move(deplacement move[MAX_SAUTS], int j)
+{
+ for(int i=0 ; i<j ; i++)
+ {
+  move[i].bushi='\0';
+  move[i].x_dep=0;
+  move[i].y_dep=0;
+  move[i].x_arr=0;
+  move[i].y_arr=0;
+  move[i].joueur=0;
+  move[i].tour=0;
+  move[i].saute=0;
+  move[i].shing_shang=0;
+ }
+}
+
 
 
 
