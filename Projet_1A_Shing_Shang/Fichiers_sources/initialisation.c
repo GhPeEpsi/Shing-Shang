@@ -53,10 +53,15 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
  plateau[8][4].couleur=32;
  plateau[8][5].couleur=32;
  //portail non vide :
- plateau[1][4].non_case=plateau[1][4].vide=0;
- plateau[1][5].non_case=plateau[1][5].vide=0;   //les portails sont des cases qui ne sont pas vide
- plateau[8][4].non_case=plateau[8][4].vide=0;
- plateau[8][5].non_case=plateau[8][5].vide=0;
+ plateau[1][4].non_case=0;
+ plateau[1][5].non_case=0;   //les portails sont des cases qui ne sont pas vide
+ plateau[8][4].non_case=0;
+ plateau[8][5].non_case=0;
+ //portail vide :
+ plateau[1][4].vide=1;
+ plateau[1][5].vide=1;
+ plateau[8][4].vide=1;
+ plateau[8][5].vide=1;
 
 
 
@@ -109,13 +114,13 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
 
 
  //TESTS!!!!   debug
- plateau[2][2].bushis='S'; 
- plateau[2][2].couleur=31;
- plateau[2][2].non_case=plateau[2][2].vide=0;
+ plateau[3][4].bushis='D'; 
+ plateau[3][4].couleur=31;
+ plateau[3][4].non_case=plateau[3][4].vide=0;
 
- plateau[4][2].bushis='S'; 
- plateau[4][2].couleur=31;
- plateau[4][2].non_case=plateau[2][2].vide=0;
+ plateau[2][4].bushis='S'; 
+ plateau[2][4].couleur=31;
+ plateau[2][4].non_case=plateau[3][4].vide=0;
 
 
 
@@ -230,7 +235,7 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
    }
 
 
-   //res=gagner();
+ res=gagner(plateau);
 
  }while(res!=1); //ancienne boucle (move[j-1].saute==1);
 

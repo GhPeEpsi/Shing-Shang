@@ -24,5 +24,6 @@ char trouver_bushi_saute(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][
 void manger(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS], comp_der *compteur);
 int verif_bonne_equipe(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
 int verif_autre_tour(autre_tour tmp, deplacement move[MAX_SAUTS], int j);
-
-
+int gagner(case_pla plateau[LAR_PLA][HAU_PLA]);
+int verif_victoire_passerelle(case_pla plateau[LAR_PLA][HAU_PLA]);
+int verif_victoire_dragon(case_pla plateau[LAR_PLA][HAU_PLA]);

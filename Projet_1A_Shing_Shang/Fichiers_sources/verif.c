@@ -528,3 +528,95 @@ int verif_autre_tour(autre_tour tmp, deplacement move[MAX_SAUTS], int j)
  //printf("debug : verif_autre_tour tmp.pos_y=%d\n",tmp.pos_y);
  return res;
 }
+
+//##########################################################################################################################################
+
+int gagner(case_pla plateau[LAR_PLA][HAU_PLA])
+{
+ int res, res_return;
+ res=verif_victoire_passerelle(plateau);
+
+ if (res==0)
+ {
+  printf("La partie continue.\n");
+  res_return=0;
+ }
+ else if (res==1)
+ {
+  printf("L'équipe rouge a gagné !\n");
+  res_return=1;
+ }
+ else if (res==2)
+ {
+  printf("L'équipe bleu a gagné !\n");
+  res_return=1;
+ }
+
+ return res_return;
+}
+
+//##########################################################################################################################################
+
+int verif_victoire_passerelle(case_pla plateau[LAR_PLA][HAU_PLA])
+{
+ int res;
+
+ if ((plateau[1][4].bushis=='D')||(plateau[1][5].bushis=='D'))
+ {
+  printf("debug : verif_victoire_passeralle : 1\n");
+  res=1; //si il y a un dragon sur une passerel coté bleu alors on renvoit 1
+ }
+ else if ((plateau[8][4].bushis=='D')||(plateau[8][5].bushis=='D'))
+ {
+  printf("debug : verif_victoire_passeralle : 2\n");
+  res=2; //si il y a un dragon sur une passerel coté rouge alors on renvoit 2
+ }
+ else
+ {
+  printf("debug : verif_victoire_passeralle : 3\n");
+  res=verif_victoire_dragon(plateau); //sinon on verifie qu'il reste des dragons
+ }
+
+ return res;
+}
+
+//##########################################################################################################################################
+
+int verif_victoire_dragon(case_pla plateau[LAR_PLA][HAU_PLA])
+{
+ //VARIABLES
+ int i, j, d_bleu=0, d_rouge=0, res=0;
+
+ //FONCTION
+ for (i=0; i<10; i++)
+ {
+   for (j=0; j<10; j++)
+   {
+
+      if ((plateau[i][j].bushis=='D')&&(plateau[i][j].couleur==31)) //dragon de couleur rouge
+      {
+       d_rouge++;
+      }
+    
+      if ((plateau[i][j].bushis=='D')&&(plateau[i][j].couleur==34))
+      {
+       d_bleu++;
+      }
+
+  }
+ }
+
+ if(d_rouge==0)
+ {
+  printf("debug : verif_victoire_dragon : 1\n");
+  res=2; //si les rouges n'ont plus de Dragon alors on renvoit 2(les bleus gagne)
+ }
+
+ if(d_bleu==0)
+ {
+  printf("debug : verif_victoire_dragon : 2\n");
+  res=1; //si les bleus n'ont plus de Dragon alors on renvoit 1(les rouges gagne)
+ }
+ 
+ return res;
+}
