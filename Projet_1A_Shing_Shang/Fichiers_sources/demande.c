@@ -74,10 +74,23 @@ char demande_dep_dep(deplacement test[MAX_SAUTS], int j)
 
  //demande de la position de départ du bushi à déplacer
  printf("\nQuelle est la position du Bushi que vous voulez déplacer ?\n");
- printf("Ligne (départ) :\n");
- scanf("%d", &test[j].y_dep);
- printf("Colonne (départ) :\n");
- scanf("%d", &test[j].x_dep);
+
+ do
+ {
+  printf("Ligne (départ) :\n");
+  scanf("%d", &test[j].y_dep);
+  while(getchar()!='\n');
+ }
+ while((test[j].y_dep>=10) || (test[j].y_dep<0));
+
+ do
+ {
+  printf("Colonne (départ) :\n");
+  scanf("%d", &test[j].x_dep);
+  while(getchar()!='\n');
+ }
+ while((test[j].x_dep>=10) || (test[j].x_dep<0));
+ 
 }
 
 //##############################################################################################################################################
@@ -87,11 +100,23 @@ int demande_dep_arr(deplacement test[MAX_SAUTS], int j)
 
  //demande de la position d'arrivée du bushi à déplacer
  printf("\nOù voulez-vous déplacer votre Bushi ?\n");
- printf("Ligne (arrivée) :\n");
- scanf("%d", &test[j].y_arr);
- printf("Colonne (arrivée) :\n");
- scanf("%d", &test[j].x_arr);
- while(getchar()!='\n');  //permet d'eviter d'entrer 2 fois le type de bushis au tour suivant
+ do
+ {
+  printf("Ligne (arrivée) :\n");
+  scanf("%d", &test[j].y_arr);
+  while(getchar()!='\n');
+ }
+ while((test[j].y_arr>=10) || (test[j].y_arr<0));
+ 
+ do
+ {
+  printf("Colonne (arrivée) :\n");
+  scanf("%d", &test[j].x_arr); 
+  while(getchar()!='\n');
+ }
+ while((test[j].x_arr>=10) || (test[j].x_arr<0));
+
+ //while(getchar()!='\n');  //permet d'eviter d'entrer 2 fois le type de bushis au tour suivant
 
 }
 
@@ -154,9 +179,13 @@ int vouloir_autre_saut(deplacement move[MAX_SAUTS], int j)
 
  if(move[j].saute==1)
  {
-  aff_vouloir_rejouer();
-  scanf("%d",&i);
-  while(getchar() !='\n');
+  do
+  {
+   aff_vouloir_rejouer();
+   scanf("%d",&i);
+   while(getchar() !='\n');
+  }
+  while((i!=0)&&(i!=1));
 
   if(i==1) 
   {

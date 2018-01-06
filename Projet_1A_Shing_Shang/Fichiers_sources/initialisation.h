@@ -17,4 +17,6 @@ int initia_compteur(comp_der *compteur);
 int couleur_differente(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
 void storer(int couleur, comp_der *compteur);
 void initia_move(deplacement move[MAX_SAUTS], int j);
+void initia_autre_tour(autre_tour *tour);
+void remp_tour_supp(deplacement move[MAX_SAUTS], autre_tour *tour, int j);
 

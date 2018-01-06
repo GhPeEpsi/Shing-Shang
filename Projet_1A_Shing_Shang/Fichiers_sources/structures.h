@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <ctype.h>
 
 
 //Constantes :
@@ -22,6 +23,14 @@
 
 
 //DEFINITIONS DES STRUCTURES :
+typedef struct //définit ce qu'il faut retenir pour faire un autre tour avec un autre bushis après shing-shang
+{ 
+ int droit;    //booléen qui indique si c'est un deuxiéme tour
+ char bushi;   //type de bushi
+ int pos_x;    //position du bushi en abscisse
+ int pos_y;    //position du bushi en ordonnée
+}autre_tour;
+
 typedef struct
 {
  int nb_sauts;     //définit combien de saut a effectué le bushis pendant le tour

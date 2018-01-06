@@ -10,7 +10,7 @@
 //###########################################################################################################################################
 
 
-void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA], bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2, comp_der *compteur)
+void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA], bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2, comp_der *compteur, autre_tour tmp)
 {
  //#### comment ####
  //cette fonction commence par demander les coordonnées de déplacement puis lances les bonnes verifications et lance la fonction qui deplace
@@ -18,7 +18,7 @@ void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA]
  //
  
  //variables
- int res_deplacement, res_bonne_equipe;
+ int res_deplacement, res_bonne_equipe, res_autre_tour;
 
  //lancement de la demande :
  //lancement la fonction qui verrifie que les déplacements et on recommence tant que c'est pas bon !
@@ -29,6 +29,7 @@ void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA]
   //printf("J dans la fonction choix_verif (post boucle_entre-correct): %d\n",j); //debug
   res_deplacement=choix_bushi(move, plateau, singe, lion, dragon, compteur);
   res_bonne_equipe=verif_bonne_equipe(move, plateau, compteur->nb_sauts);
+  res_autre_tour=verif_autre_tour(tmp, move, compteur->nb_sauts);
   //printf("debug : choix_verif : res_bonne_equipe=%d\n",res_bonne_equipe); //debug 
 
   if(res_deplacement==0)
@@ -41,7 +42,12 @@ void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA]
     printf("\nHum vous vous êtes trompé d'équipe !!\n\n");   
   }
 
- }while((res_deplacement==0)||(res_bonne_equipe==0));
+  if(res_autre_tour==0)
+  {
+    printf("\nVous ne pouvez pas réutiliser ce Bushi puisque vous venez de faire un Shing-Shang avec !!\n\n");   
+  }
+
+ }while((res_deplacement==0)||(res_bonne_equipe==0)||(res_autre_tour==0));
 
  //printf("\n\nLe Bushi déplacé est le suivant : %c\n\n",bushi_deplace); debug
 
@@ -496,4 +502,29 @@ int verif_bonne_equipe(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HA
  return res;
 }
 
+//##########################################################################################################################################
 
+int verif_autre_tour(autre_tour tmp, deplacement move[MAX_SAUTS], int j)
+{
+ //#### comment ####
+ // cette fonction sert a verifier qu'aprés un shing-shang le joueur ne réutilise pas le même bushis :
+ //
+ 
+ int res;
+
+ if((tmp.pos_x!=move[j].x_dep) || (tmp.pos_y!=move[j].y_dep))
+ {
+  res=1;
+ }
+ else
+ {
+  res=0;
+ }
+
+ //printf("debug : verif_autre_tour res=%d\n",res);
+ //printf("debug : verif_autre_tour tmp.droit=%d\n",tmp.droit);
+ //printf("debug : verif_autre_tour tmp.bushi=%c\n",tmp.bushi);
+ //printf("debug : verif_autre_tour tmp.pos_x=%d\n",tmp.pos_x);
+ //printf("debug : verif_autre_tour tmp.pos_y=%d\n",tmp.pos_y);
+ return res;
+}

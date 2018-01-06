@@ -171,8 +171,11 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
  //variables :
  int i=0, res=0, j=0, res_autre_saut;
  comp_der compteur;
+ autre_tour tour_supp;
  initia_compteur(&compteur);
  initia_move(move, j);
+ initia_autre_tour(&tour_supp);
+ 
 
  //boucle qui permet la continuité de la partie
  do 
@@ -182,7 +185,7 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
    qui_joue(i, pseudo1, pseudo2);
    aff_rejouer(move, j);  //à modifier
    aff_pla(plateau);
-   choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2, &compteur);
+   choix_verif(move, plateau, singe, lion, dragon, pseudo1, pseudo2, &compteur, tour_supp);
 
    res_autre_saut=vouloir_autre_saut(move, j);  //fonction qui demande si le joueur veut refaire un saut (si il a déjà fait un saut)
                                                 // ou s'il veut jouer avec un autre bushi après le shing-shang
@@ -197,6 +200,7 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
       {
          //printf("debug : deroulement : shing shang\n");
          retirer_bushis(plateau, move, compteur);
+	 remp_tour_supp(move, &tour_supp, j);
          initia_move(move, j);
          initia_compteur(&compteur);
          j=0;
@@ -211,6 +215,7 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
           move[0].tour=i;
           initia_compteur(&compteur);
           j=0;
+          initia_autre_tour(&tour_supp);
          }
       }
    }
@@ -221,6 +226,7 @@ void deroulement(case_pla plateau[HAU_PLA][LAR_PLA], deplacement move[MAX_SAUTS]
       move[j].tour=i;
       initia_compteur(&compteur);
       initia_move(move, j);
+      initia_autre_tour(&tour_supp);
    }
 
 
@@ -450,6 +456,32 @@ void initia_move(deplacement move[MAX_SAUTS], int j)
   move[i].saute=0;
   move[i].shing_shang=0;
  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void initia_autre_tour(autre_tour *tour)
+{
+ //printf("debug : initia_autre_tour\n");
+ tour->droit=0;
+ tour->bushi='\0';
+ tour->pos_x=0;
+ tour->pos_y=0;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void remp_tour_supp(deplacement move[MAX_SAUTS], autre_tour *tour, int j)
+{
+ tour->droit=1;
+ tour->bushi=move[j-1].bushi;
+ tour->pos_x=move[j-1].x_arr;
+ tour->pos_y=move[j-1].y_arr;
+
+ //printf("debug : remp_tour_supp\n");
+ //printf("debug : remp_tour_supp move[j].bushi=%c\n",move[j-1].bushi);
+ //printf("debug : remp_tour_supp move[j].x_arr=%d\n",move[j-1].x_arr);
+ //printf("debug : remp_tour_supp move[j].y_arr=%d\n",move[j-1].y_arr);
 }
 
 

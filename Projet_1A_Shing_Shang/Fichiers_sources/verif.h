@@ -6,7 +6,7 @@
 //PROTOTYPES :
 //verif :
 int choix_bushi(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], bushi singe, bushi lion, bushi dragon, comp_der *compteur);
-void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA], bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2, comp_der *compteur);
+void choix_verif(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA], bushi singe, bushi lion, bushi dragon, perso *pseudo1, perso *pseudo2, comp_der *compteur, autre_tour tmp);
 int verif_bushis(deplacement test[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], comp_der *compteur);
 char boucle_entre_correcte(deplacement move[MAX_SAUTS], case_pla plateau[HAU_PLA][LAR_PLA], perso *pseudo1, perso *pseudo2, comp_der *compteur);
 
@@ -23,6 +23,6 @@ int verif_bushi_inf(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_P
 char trouver_bushi_saute(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
 void manger(case_pla plateau[LAR_PLA][HAU_PLA], deplacement move[MAX_SAUTS], comp_der *compteur);
 int verif_bonne_equipe(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA], int j);
-
+int verif_autre_tour(autre_tour tmp, deplacement move[MAX_SAUTS], int j);
 
 
