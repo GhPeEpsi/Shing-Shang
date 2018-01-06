@@ -344,18 +344,22 @@ int verif_arrive(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_PLA]
  //
  
  //variables :
- int res;
+ int res, normal, drag_port;
+
+ //calcul des bits de verif :
+ normal=(plateau[move[j].y_arr][move[j].x_arr].vide==1)&&(plateau[move[j].y_arr][move[j].x_arr].bushis!='P');
+ drag_port=(plateau[move[j].y_dep][move[j].x_dep].bushis=='D')&&(plateau[move[j].y_arr][move[j].x_arr].bushis=='P');
 
  //verif :
  //printf("Verif_arrive j=%d\n",j); //debug
  //printf("Verif_arrive vide?=%d\n",plateau[move[j].y_arr][move[j].x_arr].vide); //debug
- if(plateau[move[j].y_arr][move[j].x_arr].vide==1)
+ if(normal||drag_port)
  {
   res=1;
  }
  else
  {
- res=0;
+  res=0;
  }
  
  //retour
@@ -442,8 +446,8 @@ int verif_bushi_inf(deplacement move[MAX_SAUTS], case_pla plateau[LAR_PLA][HAU_P
  saute=trouver_bushi_saute(move, plateau, j);
 
  //
- if((sauteur<=saute)&&(saute!='o'))  //les caractéres sont rangés par ordre alphabétique (a plus petit ; z plus grand, 
- {                   //D L S sont rangées dans l'ordre inverse d'où le inférieur ou égal ....
+ if((saute!='P')&&((sauteur<=saute)&&(saute!='o')))  //les caractéres sont rangés par ordre alphabétique (a plus petit ; z plus grand, 
+ {                   //D L S sont rangées dans l'ordre inverse d'où l'inférieur ou égal ....
   res=1;
   //printf("youpi");  //debug
  }
@@ -563,17 +567,17 @@ int verif_victoire_passerelle(case_pla plateau[LAR_PLA][HAU_PLA])
 
  if ((plateau[1][4].bushis=='D')||(plateau[1][5].bushis=='D'))
  {
-  printf("debug : verif_victoire_passeralle : 1\n");
+  //printf("debug : verif_victoire_passeralle : 1\n");
   res=1; //si il y a un dragon sur une passerel coté bleu alors on renvoit 1
  }
  else if ((plateau[8][4].bushis=='D')||(plateau[8][5].bushis=='D'))
  {
-  printf("debug : verif_victoire_passeralle : 2\n");
+  //printf("debug : verif_victoire_passeralle : 2\n");
   res=2; //si il y a un dragon sur une passerel coté rouge alors on renvoit 2
  }
  else
  {
-  printf("debug : verif_victoire_passeralle : 3\n");
+  //printf("debug : verif_victoire_passeralle : 3\n");
   res=verif_victoire_dragon(plateau); //sinon on verifie qu'il reste des dragons
  }
 
@@ -608,15 +612,34 @@ int verif_victoire_dragon(case_pla plateau[LAR_PLA][HAU_PLA])
 
  if(d_rouge==0)
  {
-  printf("debug : verif_victoire_dragon : 1\n");
+  //printf("debug : verif_victoire_dragon : 1\n");
   res=2; //si les rouges n'ont plus de Dragon alors on renvoit 2(les bleus gagne)
  }
 
  if(d_bleu==0)
  {
-  printf("debug : verif_victoire_dragon : 2\n");
+  //printf("debug : verif_victoire_dragon : 2\n");
   res=1; //si les bleus n'ont plus de Dragon alors on renvoit 1(les rouges gagne)
  }
  
  return res;
 }
+
+//##########################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

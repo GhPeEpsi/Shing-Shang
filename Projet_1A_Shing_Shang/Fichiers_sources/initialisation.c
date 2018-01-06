@@ -113,14 +113,14 @@ void remp_pla(case_pla plateau[HAU_PLA][LAR_PLA])
  plateau[9][7].non_case=plateau[9][7].vide=0;
 
 
- //TESTS!!!!   debug
+ /*/TESTS!!!!   debug
  plateau[3][4].bushis='D'; 
  plateau[3][4].couleur=31;
  plateau[3][4].non_case=plateau[3][4].vide=0;
 
  plateau[2][4].bushis='S'; 
  plateau[2][4].couleur=31;
- plateau[2][4].non_case=plateau[3][4].vide=0;
+ plateau[2][4].non_case=plateau[3][4].vide=0;*/
 
 
 
